@@ -5,8 +5,8 @@ import numpy as np
 
 def plot3d(y_hat, y_true, X):
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot(X[:, 0], X[:, 1], y_hat)
-    ax.plot(X[:, 0], X[:, 1], y_true)
+    ax1 = fig.add_subplot(111, projection='3d')
+    ax1.scatter(X[:, 0], X[:, 1], y_hat)
+    ax1.scatter(X[:, 0], X[:, 1], y_true)
     plt.show()
 

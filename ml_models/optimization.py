@@ -21,7 +21,6 @@ class GradientDescent(Optimizer):
         for mat, g in self.gradient.items():
             self.gradient[mat] = self.lr * g
 
-
 class Momentum(Optimizer):
     def __init__(self, lr, momentum, regularizer=None):
         super(Momentum, self).__init__(lr, regularizer=regularizer)
@@ -36,3 +35,4 @@ class Momentum(Optimizer):
         for mat, g in self.gradient.items():
             self.velocity[mat] = (1 - self.momentum) * g + self.momentum * self.velocity[mat]
             self.gradient[mat] = self.lr * self.velocity[mat]
+            

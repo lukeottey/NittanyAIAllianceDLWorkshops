@@ -1,5 +1,7 @@
 import numpy as np
 
+__all__ = ['mse', 'nll']
+
 def mse(y_hat, y):
     return np.mean((y_hat - y) ** 2)
 
