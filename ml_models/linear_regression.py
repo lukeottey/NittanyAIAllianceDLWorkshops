@@ -20,6 +20,9 @@ class LinearRegression:
         for mat, g in self.optimizer.gradient.items():
             self.model[mat] -= g
 
+    def adjust_lr(self, gamma):
+        self.optimizer.lr *= gamma
+
     def backward(self, X, y, y_hat, m):
         self.optimizer.gradient['W'] = X.T.dot(y_hat - y) / m
         if hasattr(self.optimizer, 'regularizer'):
@@ -76,7 +79,7 @@ class LogisticRegression(LinearRegression):
 
 class SoftmaxRegression(LinearRegression):
     epsilon = 1e-6
-    def __init__(self, optimizer, loss, num_classes):
+    def __init__(self, optimizer, loss, num_classes=10):
         super(SoftmaxRegression, self).__init__(optimizer, loss)
         self.num_classes = num_classes
     
@@ -102,6 +105,7 @@ class SoftmaxRegression(LinearRegression):
         accuracy = np.sum((np.argmax(y, axis=1) == np.argmax(y_hat, axis=1)).astype('int')) / len(y)
         self.backward(X, y, y_hat, X.shape[0])
         self.optimize()
+        self.logger['train_acc'].append(accuracy)
         self.logger['train_loss'].append(loss)
         return accuracy, loss
 
@@ -111,8 +115,8 @@ class SoftmaxRegression(LinearRegression):
         y = np.clip(y, self.epsilon, 1.0 - self.epsilon)
         loss = np.mean(self.loss_fn(y_hat, y))
         accuracy = np.sum((np.argmax(y, axis=1) == np.argmax(y_hat, axis=1)).astype('int')) / len(y)
-        self.logger['test_loss'].append(loss)
         self.logger['test_acc'].append(accuracy)
+        self.logger['test_loss'].append(loss)
         return accuracy, loss
     
 
