@@ -87,7 +87,7 @@ class SoftmaxRegression(LinearRegression):
         output = np.dot(X, self.model['W']) + self.model['b']
         classes = np.arange(self.num_classes)
         x = output - np.max(output)
-        y_hat = classes[np.argmax(np.exp(x)/sum(np.exp(x)), axis=1)]
+        y_hat = classes[np.argmax(np.exp(x)/(sum(np.exp(x)) + self.epsilon), axis=1)]
         y_hat = np.eye(self.num_classes)[y_hat].astype(float) + self.epsilon
         return y_hat
 
@@ -118,6 +118,3 @@ class SoftmaxRegression(LinearRegression):
         self.logger['test_acc'].append(accuracy)
         self.logger['test_loss'].append(loss)
         return accuracy, loss
-    
-
-

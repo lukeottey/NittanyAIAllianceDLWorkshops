@@ -3,7 +3,7 @@ import argparse
 import ml_models
 import datasets
 
-def get_args():
+def get_args(): # python3 intro_train.py -d mnist -b 32 -o GD -lr 0.001
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--dataset', type=str, default='mnist', choices=['mnist', 'svhn'])
     parser.add_argument('-m', '--model', type=str, default='SoftmaxRegression', choices=['LogisticRegression', 'SoftmaxRegression'])
@@ -44,7 +44,6 @@ def main():
     optimizer = {
         'GD': lambda: ml_models.GradientDescent(lr=args.lr, regularizer=regularizer),
         'Momentum': lambda: ml_models.Momentum(lr=args.lr, momentum=args.momentum, regularizer=regularizer)}[args.optimizer]()
-    
     model = ml_models.__dict__[args.model](optimizer=optimizer, loss=ml_models.__dict__[args.loss_fn])
     trainloader, testloader = datasets.__dict__[args.dataset](root='./data', batch_size=args.batch_size, return_datasets=False)
     for x, y in trainloader:

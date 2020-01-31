@@ -1,4 +1,5 @@
 import os
+import numpy as np
 
 import torch
 import torchvision
@@ -37,29 +38,69 @@ def get_dataset(dataset, root, batch_size, return_datasets, **kwargs):
         num_workers=kwargs.get('num_workers', 0 if not torch.cuda.is_available() else 1))
     return trainloader, testloader
 
-def cifar10(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('cifar10', root, batch_size, return_datasets=return_datasets, **kwargs)
+def build_subset(dataset, root, subset, batch_size, return_datasets, **kwargs):
+    trainset, testset = get_dataset(dataset, root, batch_size, return_datasets=True, **kwargs)
+    try:
+        train_indices = torch.nonzero(trainset.targets[..., None] == torch.Tensor(np.array(subset)))[:, 0]
+        test_indices = torch.nonzero(testset.targets[..., None] == torch.Tensor(np.array(subset)))[:, 0]
+    except AttributeError:
+        train_indices = torch.nonzero(torch.Tensor(trainset.labels)[..., None] == torch.Tensor(np.array(subset)))[:, 0]
+        test_indices = torch.nonzero(torch.Tensor(testset.labels)[..., None] == torch.Tensor(np.array(subset)))[:, 0]
+    trainset = torch.utils.data.Subset(trainset, indices=train_indices)
+    testset = torch.utils.data.Subset(testset, indices=test_indices)
+    if return_datasets:
+        return trainset, testset
+    trainloader = data.DataLoader(dataset=trainset, batch_size=batch_size, shuffle=True, \
+        pin_memory=kwargs.get('pin_memory', torch.cuda.is_available()),
+        num_workers=kwargs.get('num_workers', 0 if not torch.cuda.is_available() else 1),
+        drop_last=kwargs.get('drop_last', True))
+    testloader = data.DataLoader(dataset=testset, batch_size=batch_size, shuffle=True, \
+        pin_memory=kwargs.get('pin_memory', torch.cuda.is_available()), drop_last=kwargs.get('drop_last', True),
+        num_workers=kwargs.get('num_workers', 0 if not torch.cuda.is_available() else 1))
+    return trainloader, testloader
 
-def cifar100(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('cifar100', root, batch_size, return_datasets=return_datasets, **kwargs)
 
-def svhn(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('svhn', root, batch_size, return_datasets=return_datasets, **kwargs)
+def cifar10(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('cifar10', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('cifar10', root, subset, batch_size, return_datasets, **kwargs)
 
-def stl10(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('stl10', root, batch_size, return_datasets=return_datasets, **kwargs)
+def cifar100(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('cifar100', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('cifar100', root, subset, batch_size, return_datasets, **kwargs)
 
-def mnist(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('mnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+def svhn(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('svhn', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('svhn', root, subset, batch_size, return_datasets, **kwargs)
 
-def fashion_mnist(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('fashion_mnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+def stl10(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('stl10', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('stl10', root, subset, batch_size, return_datasets, **kwargs)
 
-def kmnist(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('kmnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+def mnist(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('mnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('mnist', root, subset, batch_size, return_datasets, **kwargs)
 
-def emnist(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('emnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+def fashion_mnist(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('fashion_mnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('fashion_mnist', root, subset, batch_size, return_datasets, **kwargs)
 
-def qmnist(root, batch_size, return_datasets=False, **kwargs):
-    return get_dataset('qmnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+def kmnist(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('kmnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('kmnist', root, subset, batch_size, return_datasets, **kwargs)
+
+def emnist(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('emnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('emnist', root, subset, batch_size, return_datasets, **kwargs)
+
+def qmnist(root, batch_size, return_datasets=False, subset=None, **kwargs):
+    if subset is None:
+        return get_dataset('qmnist', root, batch_size, return_datasets=return_datasets, **kwargs)
+    return build_subset('qmnist', root, subset, batch_size, return_datasets, **kwargs)
