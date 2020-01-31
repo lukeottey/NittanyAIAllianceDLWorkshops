@@ -31,10 +31,6 @@ def main():
     np.random.shuffle(x2)
     X = np.column_stack((x1, x2))
     y = np.array([rosenbrock_fn(x) for x in X])
-    #y = np.array([max(np.sin(x0) / x0 ** (np.sin(x1)), 5 + x0) for x0, x1 in X])
-    #y = np.cos(np.array([np.sin((x0 ** 2)) * x1 ** np.sqrt(abs(x0 + x1 * 0.25)) for x0, x1 in X]))
-    #y_avg = np.mean(y, axis=0)
-    
     y_true = y #(y > y_avg).astype('float')
     
     optimizer = Momentum(lr=0.1, momentum=0.9, regularizer=None)

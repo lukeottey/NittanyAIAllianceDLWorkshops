@@ -1,10 +1,13 @@
 import os
 from glob import glob
 
+import numpy as np
 from PIL import Image
 
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
+
+__all__ = ['PartialDataset']
 
 class PartialDataset(Dataset):
     default_transform = transforms.Compose([transforms.ToTensor()])
@@ -20,7 +23,7 @@ class PartialDataset(Dataset):
             img_paths = glob('{path}/{c}/*.png'.format(path=root, c=c))
             for path in img_paths:
                 self.labels.append(c)
-                self.data.append(Image.open(path))
+                self.data.append(np.array(Image.open(path)))
         if transform is None:
             self.transform = self.default_transform
         else:

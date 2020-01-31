@@ -30,7 +30,6 @@ class SoftmaxRegression(LinearRegression):
         for e in range(epochs):
             y_hat = self.predict(X)
             self.loss.append(self.loss_fn(y_hat, y))
-            print(self.loss[-1])
             self.backward(X, y, y_hat, m_examples)
             self.optimize()
 
