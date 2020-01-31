@@ -1,8 +1,6 @@
 import os
 from glob import glob
 
-import math
-import numpy as np
 from PIL import Image
 
 from torch.utils.data import Dataset
@@ -35,5 +33,3 @@ class PartialDataset(Dataset):
         img, label = self.data[index], self.labels[index]
         img = self.transform(img)
         return img, label
-
-

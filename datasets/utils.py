@@ -1,6 +1,5 @@
 import tqdm
-import numpy as np
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 
 def find_mean_n_std(dataset, batch_size):
     """
